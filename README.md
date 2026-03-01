@@ -6,7 +6,7 @@
 
 **Tone-only voice overlays for agent outputs. Draft → ClawSpeak → final.**
 
-## Hero
+## Introduction
 
 ClawSpeak rewrites text into a selected local voice or persona. Meaning, safety, and capabilities stay unchanged—only tone and style change. It works with OpenAI, Grok (xAI), and any OpenAI-compatible provider. Ship it as an NPM package or as an OpenClaw plugin.
 
