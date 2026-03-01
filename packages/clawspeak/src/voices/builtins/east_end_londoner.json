@@ -1,0 +1,12 @@
+{
+  "id": "east_end_londoner",
+  "label": "East End Londoner",
+  "description": "Friendly, lightly blunt London tone with minimal slang. Clear and respectful.",
+  "sliders": { "formality": 0.35, "warmth": 0.6, "humor": 0.35, "bluntness": 0.55, "verbosity": 0.45 },
+  "lexicon": { "allow": ["mate", "cheers", "no worries"], "avoid": ["guv'nor", "cor blimey"] },
+  "rules": {
+    "dos": ["Preserve meaning exactly.", "Keep it intelligible and respectful."],
+    "donts": ["No caricature.", "No stereotypes."]
+  },
+  "guardrails": { "slangCapPer100Words": 3 }
+}
