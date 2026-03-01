@@ -161,18 +161,15 @@ export type CreateVoicedAgentOptions<I = unknown> = {
   model: ModelAdapter;
 
   strength?: number; // 0..1
-  includeMeta?: boolean; // default false (return only text)
   onMeta?: (meta: PersonaMeta) => void; // optional hook for warnings/telemetry
 };
 
 /**
  * Wrap any existing agent function so every response gets rewritten into a selected voice.
- * This is tone-only post-processing: meaning/capability/safety are unchanged.
+ * Always returns { text, meta }. This is tone-only post-processing: meaning/capability/safety are unchanged.
  */
 export function createVoicedAgent<I = unknown>(opts: CreateVoicedAgentOptions<I>) {
-  const includeMeta = Boolean(opts.includeMeta);
-
-  return async (input: I): Promise<string | ApplyResult> => {
+  return async (input: I): Promise<ApplyResult> => {
     const draft = await opts.agent(input);
 
     const res = await applyVoice({
@@ -181,13 +178,24 @@ export function createVoicedAgent<I = unknown>(opts: CreateVoicedAgentOptions<I>
       model: opts.model,
       options: {
         strength: opts.strength ?? 0.55,
-        returnMetadata: includeMeta
+        returnMetadata: true
       }
     });
 
     if (res.meta && opts.onMeta) opts.onMeta(res.meta);
 
-    return includeMeta ? res : res.text;
+    return res;
+  };
+}
+
+/**
+ * Like createVoicedAgent but returns only the rewritten text (Promise<string>).
+ */
+export function createVoicedTextAgent<I = unknown>(opts: CreateVoicedAgentOptions<I>) {
+  const voiced = createVoicedAgent(opts);
+  return async (input: I): Promise<string> => {
+    const res = await voiced(input);
+    return res.text;
   };
 }
 

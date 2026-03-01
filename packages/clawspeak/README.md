@@ -75,6 +75,8 @@ Use `listVoices()` to see available voices. ClawSpeak ships with:
 - `listVoices()` → voice ids + descriptions
 - `applyVoice({ text, voiceId, model, options })` → rewritten text (and optional metadata)
 - `previewVoice({ voiceId, sampleText, model, options })` → quick preview
+- **`createVoicedAgent({ agent, voiceId, model, strength?, onMeta? })`** → wraps an agent so every response is rewritten into the chosen voice; returns `Promise<ApplyResult>` (always includes `text` and `meta`). Use `onMeta` for warnings/telemetry.
+- **`createVoicedTextAgent(opts)`** → same options as `createVoicedAgent`, but returns `Promise<string>` (only the rewritten text).
 
 ## Notes
 

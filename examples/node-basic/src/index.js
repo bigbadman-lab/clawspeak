@@ -40,7 +40,6 @@ const voiced = createVoicedAgent({
   voiceId: 'east_end_londoner',
   model: adapter,
   strength: 0.55,
-  includeMeta: true,
   onMeta: (meta) => {
     if (meta.warnings?.length) console.log('ClawSpeak warnings:', meta.warnings);
   }
