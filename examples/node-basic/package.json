@@ -1,0 +1,11 @@
+{
+  "name": "clawspeak-node-basic",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "clawspeak": "workspace:*"
+  },
+  "scripts": {
+    "start": "node src/index.js"
+  }
+}
