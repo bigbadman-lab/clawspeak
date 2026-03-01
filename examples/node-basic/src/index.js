@@ -1,4 +1,17 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import dotenv from 'dotenv';
 import { listVoices, applyVoice, openAICompatAdapter } from 'clawspeak';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.join(__dirname, '..', '.env');
+dotenv.config({ path: envPath, override: true });
+
+console.log('Using env file:', envPath);
+console.log('API_KEY prefix:', process.env.API_KEY ? process.env.API_KEY.slice(0, 7) : '(missing)');
+console.log('MODEL:', process.env.MODEL ?? '(not set)');
+console.log('PROVIDER:', process.env.PROVIDER ?? 'openai');
 
 const provider = process.env.PROVIDER ?? 'openai';
 // openai => https://api.openai.com/v1
