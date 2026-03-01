@@ -1,7 +1,7 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
-import { listVoices, applyVoice, openAICompatAdapter } from 'clawspeak';
+import { listVoices, createVoicedAgent, openAICompatAdapter } from 'clawspeak';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -29,18 +29,27 @@ console.log('Available voices:', listVoices());
 
 const adapter = openAICompatAdapter({ apiKey, model, baseUrl });
 
-const draft =
-  'Explain what ClawSpeak does in 3 short bullet points, then give one example sentence.';
+// Base agent (neutral)
+const baseAgent = async (prompt) => {
+  return `Explain what ClawSpeak does in 3 short bullet points, then give one example sentence.\n\nPrompt: ${prompt}`;
+};
 
-const res = await applyVoice({
-  text: draft,
+// Voiced agent wrapper
+const voiced = createVoicedAgent({
+  agent: baseAgent,
   voiceId: 'east_end_londoner',
   model: adapter,
-  options: { strength: 0.55, returnMetadata: true }
+  strength: 0.55,
+  includeMeta: true,
+  onMeta: (meta) => {
+    if (meta.warnings?.length) console.log('ClawSpeak warnings:', meta.warnings);
+  }
 });
 
+const out = await voiced('Demo request');
+
 console.log('\n--- OUTPUT ---\n');
-console.log(res.text);
+console.log(out.text);
 
 console.log('\n--- META ---\n');
-console.log(res.meta);
+console.log(out.meta);

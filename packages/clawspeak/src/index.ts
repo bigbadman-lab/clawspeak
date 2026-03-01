@@ -153,5 +153,43 @@ export async function previewVoice(args: {
   });
 }
 
+export type BaseAgent<I = unknown> = (input: I) => Promise<string>;
+
+export type CreateVoicedAgentOptions<I = unknown> = {
+  agent: BaseAgent<I>;
+  voiceId: VoiceId;
+  model: ModelAdapter;
+
+  strength?: number; // 0..1
+  includeMeta?: boolean; // default false (return only text)
+  onMeta?: (meta: PersonaMeta) => void; // optional hook for warnings/telemetry
+};
+
+/**
+ * Wrap any existing agent function so every response gets rewritten into a selected voice.
+ * This is tone-only post-processing: meaning/capability/safety are unchanged.
+ */
+export function createVoicedAgent<I = unknown>(opts: CreateVoicedAgentOptions<I>) {
+  const includeMeta = Boolean(opts.includeMeta);
+
+  return async (input: I): Promise<string | ApplyResult> => {
+    const draft = await opts.agent(input);
+
+    const res = await applyVoice({
+      text: draft,
+      voiceId: opts.voiceId,
+      model: opts.model,
+      options: {
+        strength: opts.strength ?? 0.55,
+        returnMetadata: includeMeta
+      }
+    });
+
+    if (res.meta && opts.onMeta) opts.onMeta(res.meta);
+
+    return includeMeta ? res : res.text;
+  };
+}
+
 export { openAICompatAdapter } from './adapters/openaiCompat.js';
 export type { OpenAICompatAdapterConfig } from './adapters/openaiCompat.js';
