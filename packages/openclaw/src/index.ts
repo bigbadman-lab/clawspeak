@@ -55,7 +55,9 @@ export default function register(api: any) {
       required: ['text']
     },
     async execute(args: any) {
-      const voiceId = (args?.voiceId as string) ?? cfg.defaultVoiceId ?? 'east_end_londoner';
+      const available = listVoices().map((v) => v.id);
+let voiceId = (args?.voiceId as string) ?? cfg.defaultVoiceId ?? 'east_end_londoner';
+if (!available.includes(voiceId)) voiceId = cfg.defaultVoiceId ?? available[0] ?? 'east_end_londoner';
       const res = await applyVoice({
         text: String(args.text ?? ''),
         voiceId,
