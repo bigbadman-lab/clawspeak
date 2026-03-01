@@ -1,5 +1,9 @@
 # ClawSpeak 🦞
 
+![CI](https://github.com/bigbadman-lab/clawspeak/actions/workflows/ci.yml/badge.svg)
+![License](https://img.shields.io/github/license/bigbadman-lab/clawspeak)
+![Node](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
+
 **Tone-only voice overlays for agent outputs. Draft → ClawSpeak → final.**
 
 ## Hero
