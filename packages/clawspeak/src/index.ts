@@ -108,3 +108,6 @@ export async function previewVoice(args: {
     options: args.options
   });
 }
+
+export { openAICompatAdapter } from './adapters/openaiCompat.js';
+export type { OpenAICompatAdapterConfig } from './adapters/openaiCompat.js';

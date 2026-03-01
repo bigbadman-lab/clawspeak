@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      undici:
+        specifier: ^7.22.0
+        version: 7.22.0
     devDependencies:
       prettier:
         specifier: ^3.3.3
@@ -14,6 +18,8 @@ importers:
       typescript:
         specifier: ^5.5.4
         version: 5.9.3
+
+  packages/clawspeak: {}
 
 packages:
 
@@ -27,8 +33,14 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  undici@7.22.0:
+    resolution: {integrity: sha512-RqslV2Us5BrllB+JeiZnK4peryVTndy9Dnqq62S3yYRRTj0tFQCwEniUy2167skdGOy3vqRzEvl1Dm4sV2ReDg==}
+    engines: {node: '>=20.18.1'}
+
 snapshots:
 
   prettier@3.8.1: {}
 
   typescript@5.9.3: {}
+
+  undici@7.22.0: {}
