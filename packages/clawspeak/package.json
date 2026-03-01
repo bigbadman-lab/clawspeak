@@ -35,13 +35,14 @@
   "exports": {
     ".": "./dist/index.js"
   },
-  "files": ["dist", "README.md", "LICENSE"],
+  "files": ["dist", "README.md", "LICENSE", "scripts"],
   "dependencies": {
     "undici": "^7.0.0"
   },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsc -p tsconfig.json --watch",
-    "test": "node -e \"console.log('no tests yet')\""
+    "test": "node -e \"console.log('no tests yet')\"",
+    "postinstall": "node scripts/postinstall.js"
   }
 }
