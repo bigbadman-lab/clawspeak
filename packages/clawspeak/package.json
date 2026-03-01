@@ -1,13 +1,41 @@
 {
   "name": "clawspeak",
   "version": "0.1.0",
+  "description": "Tone-only voice overlays for agent outputs. Draft → ClawSpeak → final.",
+  "license": "MIT",
+  "author": "Alex Attinger",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bigbadman-lab/clawspeak.git"
+  },
+  "homepage": "https://github.com/bigbadman-lab/clawspeak",
+  "bugs": {
+    "url": "https://github.com/bigbadman-lab/clawspeak/issues"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "agent",
+    "persona",
+    "voice",
+    "tone",
+    "openai",
+    "grok",
+    "xai",
+    "middleware",
+    "typescript"
+  ],
   "type": "module",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
+  },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": "./dist/index.js"
   },
-  "files": ["dist"],
+  "files": ["dist", "README.md", "LICENSE"],
   "dependencies": {
     "undici": "^7.0.0"
   },
