@@ -7,5 +7,21 @@ import scouse from './builtins/scouse.json' assert { type: 'json' };
 import glaswegian from './builtins/glaswegian.json' assert { type: 'json' };
 import geordie from './builtins/geordie.json' assert { type: 'json' };
 import dublin from './builtins/dublin.json' assert { type: 'json' };
+import southernUS from './builtins/southern_us.json' assert { type: 'json' };
+import californian from './builtins/californian.json' assert { type: 'json' };
+import overlyPolite from './builtins/overly_polite.json' assert { type: 'json' };
+import veryRude from './builtins/very_rude.json' assert { type: 'json' };
 
-export const builtInVoices: VoiceConfig[] = [eastEnd, scouse, glaswegian, geordie, dublin, newYorker, texan];
+export const builtInVoices: VoiceConfig[] = [
+  eastEnd,
+  scouse,
+  glaswegian,
+  geordie,
+  dublin,
+  newYorker,
+  texan,
+  southernUS,
+  californian,
+  overlyPolite,
+  veryRude
+];
