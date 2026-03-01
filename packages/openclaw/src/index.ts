@@ -23,6 +23,17 @@ function getConfig(api: any): PluginConfig {
   };
 }
 
+function resolveStrength(args: any) {
+  if (typeof args?.strength === 'number') return args.strength;
+
+  const style = String(args?.style ?? '').toLowerCase();
+  if (style === 'light') return 0.35;
+  if (style === 'strong') return 0.75;
+  if (style === 'medium') return 0.55;
+
+  return 0.55;
+}
+
 export default function register(api: any) {
   const cfg = getConfig(api);
   const adapter = openAICompatAdapter({
@@ -50,6 +61,11 @@ export default function register(api: any) {
         text: { type: 'string', description: 'Text to rewrite.' },
         voiceId: { type: 'string', description: 'Voice/persona id.' },
         strength: { type: 'number', minimum: 0, maximum: 1, description: '0..1 style strength.' },
+        style: {
+          type: 'string',
+          enum: ['light', 'medium', 'strong'],
+          description: 'Preset style strength (ignored if strength is provided).'
+        },
         returnMetadata: { type: 'boolean', description: 'Include slang/warnings metadata.' }
       },
       required: ['text']
@@ -63,7 +79,7 @@ if (!available.includes(voiceId)) voiceId = cfg.defaultVoiceId ?? available[0] ?
         voiceId,
         model: adapter,
         options: {
-          strength: typeof args.strength === 'number' ? args.strength : 0.55,
+          strength: resolveStrength(args),
           returnMetadata: Boolean(args.returnMetadata)
         }
       });
@@ -80,7 +96,12 @@ if (!available.includes(voiceId)) voiceId = cfg.defaultVoiceId ?? available[0] ?
       properties: {
         voiceId: { type: 'string' },
         sampleText: { type: 'string' },
-        strength: { type: 'number', minimum: 0, maximum: 1 }
+        strength: { type: 'number', minimum: 0, maximum: 1 },
+        style: {
+          type: 'string',
+          enum: ['light', 'medium', 'strong'],
+          description: 'Preset style strength (ignored if strength is provided).'
+        }
       },
       required: ['voiceId']
     },
@@ -89,7 +110,7 @@ if (!available.includes(voiceId)) voiceId = cfg.defaultVoiceId ?? available[0] ?
         voiceId: String(args.voiceId),
         sampleText: args.sampleText ? String(args.sampleText) : undefined,
         model: adapter,
-        options: { strength: typeof args.strength === 'number' ? args.strength : 0.55 }
+        options: { strength: resolveStrength(args) }
       });
       return res;
     }
