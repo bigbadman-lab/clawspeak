@@ -81,18 +81,95 @@ const builtInVoices: VoiceConfig[] = [
   }
 ];
 
+const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
+
+function buildRewritePrompt(args: { text: string; voice: VoiceConfig; strength: number }) {
+  const { text, voice, strength } = args;
+
+  const system =
+    'You are a deterministic post-processor that rewrites text into a specified voice. ' +
+    'Preserve meaning exactly. Change only tone/style. Do not add facts or remove facts. ' +
+    'Keep it respectful and broadly understandable. Avoid stereotypes and caricature.';
+
+  const developer = [
+    `VOICE: ${voice.label} (${voice.id})`,
+    `DESCRIPTION: ${voice.description}`,
+    `STRENGTH: ${strength} (0=very subtle, 1=strong but still intelligible)`,
+    `SLIDERS: ${JSON.stringify(voice.sliders)}`,
+    `LEXICON_ALLOW: ${voice.lexicon.allow.join(', ') || '(none)'}`,
+    `LEXICON_AVOID: ${voice.lexicon.avoid.join(', ') || '(none)'}`,
+    `RULES_DO: ${voice.rules.dos.join(' | ')}`,
+    `RULES_DONT: ${voice.rules.donts.join(' | ')}`,
+    `GUARDRAIL_SLANG_CAP_PER_100_WORDS: ${voice.guardrails.slangCapPer100Words}`,
+    'OUTPUT: Return ONLY the rewritten text. No quotes. No explanations.'
+  ].join('\n');
+
+  const user = `INPUT TEXT:\n${text}`;
+
+  return { system, developer, user };
+}
+
+function wordsCount(s: string) {
+  const m = s.trim().match(/\S+/g);
+  return m ? m.length : 0;
+}
+
+function countAllowedSlang(output: string, allow: string[]) {
+  const lower = output.toLowerCase();
+  let count = 0;
+  for (const phrase of allow) {
+    const p = phrase.trim().toLowerCase();
+    if (!p) continue;
+    const parts = lower.split(p);
+    if (parts.length > 1) count += parts.length - 1;
+  }
+  return count;
+}
+
 export function listVoices(): Array<Pick<VoiceConfig, 'id' | 'label' | 'description'>> {
   return builtInVoices.map(({ id, label, description }) => ({ id, label, description }));
 }
 
-export async function applyVoice(_args: {
+export async function applyVoice(args: {
   text: string;
   voiceId: VoiceId;
   model: ModelAdapter;
   options?: ApplyOptions;
 }): Promise<ApplyResult> {
-  // Next step we'll implement this properly.
-  throw new Error('applyVoice not implemented yet (next step: wire model adapter + prompt builder)');
+  const { text, voiceId, model, options } = args;
+
+  const voice = builtInVoices.find((v) => v.id === voiceId);
+  if (!voice) throw new Error(`Unknown voiceId: ${voiceId}`);
+
+  const strength = clamp01(options?.strength ?? 0.55);
+  const maxChars = options?.maxChars ?? 8000;
+  const input = text.length > maxChars ? text.slice(0, maxChars) : text;
+
+  const prompt = buildRewritePrompt({ text: input, voice, strength });
+  const rewritten = await model.rewrite({ ...prompt, temperature: 0.2 });
+
+  const totalWords = wordsCount(rewritten);
+  const slangCount = countAllowedSlang(rewritten, voice.lexicon.allow);
+  const slangPer100Words = totalWords > 0 ? (slangCount / totalWords) * 100 : 0;
+
+  const warnings: string[] = [];
+  if (slangPer100Words > voice.guardrails.slangCapPer100Words) warnings.push('slang_cap_exceeded');
+
+  for (const avoid of voice.lexicon.avoid) {
+    if (avoid && rewritten.toLowerCase().includes(avoid.toLowerCase())) {
+      warnings.push('avoid_phrase_used');
+      break;
+    }
+  }
+
+  const meta: PersonaMeta = {
+    slangCount,
+    slangPer100Words,
+    warnings,
+    strengthScore: strength
+  };
+
+  return options?.returnMetadata ? { text: rewritten, meta } : { text: rewritten };
 }
 
 export async function previewVoice(args: {
