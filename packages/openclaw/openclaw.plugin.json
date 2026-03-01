@@ -1,0 +1,24 @@
+{
+  "id": "clawspeak",
+  "name": "ClawSpeak",
+  "description": "Voice/persona overlay tools for rewriting agent outputs.",
+  "version": "0.1.0",
+  "skills": ["skills"],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "apiKey": { "type": "string" },
+      "model": { "type": "string" },
+      "baseUrl": { "type": "string" },
+      "defaultVoiceId": { "type": "string" }
+    },
+    "required": ["apiKey", "model"]
+  },
+  "uiHints": {
+    "apiKey": { "label": "API Key", "sensitive": true, "placeholder": "sk-..." },
+    "model": { "label": "Model", "placeholder": "gpt-4.1-mini (or grok-2-latest)" },
+    "baseUrl": { "label": "Base URL", "placeholder": "https://api.openai.com/v1 or https://api.x.ai/v1" },
+    "defaultVoiceId": { "label": "Default Voice", "placeholder": "east_end_londoner" }
+  }
+}
