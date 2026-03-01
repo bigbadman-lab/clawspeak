@@ -11,6 +11,7 @@ import southernUS from './builtins/southern_us.json' assert { type: 'json' };
 import californian from './builtins/californian.json' assert { type: 'json' };
 import overlyPolite from './builtins/overly_polite.json' assert { type: 'json' };
 import veryRude from './builtins/very_rude.json' assert { type: 'json' };
+import raigBaitChef from './builtins/raig_bait_chef.json' assert { type: 'json' };
 
 export const builtInVoices: VoiceConfig[] = [
   eastEnd,
@@ -23,5 +24,6 @@ export const builtInVoices: VoiceConfig[] = [
   southernUS,
   californian,
   overlyPolite,
-  veryRude
+  veryRude,
+  raigBaitChef
 ];

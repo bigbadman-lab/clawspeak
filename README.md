@@ -56,6 +56,7 @@ console.log(await glasgowAgent(""));
 - californian
 - overly_polite
 - very_rude
+- raig_bait_chef
 
 Voices are designed to remain broadly understandable, avoid stereotypes, and preserve meaning exactly.
 
