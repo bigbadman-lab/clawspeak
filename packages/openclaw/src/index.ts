@@ -66,7 +66,8 @@ export default function register(api: any) {
           enum: ['light', 'medium', 'strong'],
           description: 'Preset style strength (ignored if strength is provided).'
         },
-        returnMetadata: { type: 'boolean', description: 'Include slang/warnings metadata.' }
+        returnMetadata: { type: 'boolean', description: 'Include slang/warnings metadata.' },
+        includeMeta: { type: 'boolean', description: 'Include metadata (warnings, slang counts). Default true.' }
       },
       required: ['text']
     },
@@ -80,7 +81,7 @@ if (!available.includes(voiceId)) voiceId = cfg.defaultVoiceId ?? available[0] ?
         model: adapter,
         options: {
           strength: resolveStrength(args),
-          returnMetadata: Boolean(args.returnMetadata)
+          returnMetadata: args?.includeMeta === false ? false : true
         }
       });
       return res;
@@ -101,7 +102,8 @@ if (!available.includes(voiceId)) voiceId = cfg.defaultVoiceId ?? available[0] ?
           type: 'string',
           enum: ['light', 'medium', 'strong'],
           description: 'Preset style strength (ignored if strength is provided).'
-        }
+        },
+        includeMeta: { type: 'boolean', description: 'Include metadata (warnings, slang counts). Default true.' }
       },
       required: ['voiceId']
     },
@@ -110,7 +112,7 @@ if (!available.includes(voiceId)) voiceId = cfg.defaultVoiceId ?? available[0] ?
         voiceId: String(args.voiceId),
         sampleText: args.sampleText ? String(args.sampleText) : undefined,
         model: adapter,
-        options: { strength: resolveStrength(args) }
+        options: { strength: resolveStrength(args), returnMetadata: args?.includeMeta === false ? false : true }
       });
       return res;
     }
