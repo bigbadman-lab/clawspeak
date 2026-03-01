@@ -42,44 +42,8 @@ export type ApplyOptions = {
 
 export type ApplyResult = { text: string; meta?: PersonaMeta };
 
-const builtInVoices: VoiceConfig[] = [
-  {
-    id: 'east_end_londoner',
-    label: 'East End Londoner',
-    description: 'Friendly, lightly blunt London tone with minimal slang. Clear and respectful.',
-    sliders: { formality: 0.35, warmth: 0.6, humor: 0.35, bluntness: 0.55, verbosity: 0.45 },
-    lexicon: { allow: ['mate', 'cheers', 'no worries'], avoid: ["guv'nor", 'cor blimey'] },
-    rules: {
-      dos: ['Preserve meaning exactly.', 'Keep it intelligible and respectful.'],
-      donts: ['No caricature.', 'No stereotypes.']
-    },
-    guardrails: { slangCapPer100Words: 3 }
-  },
-  {
-    id: 'new_yorker',
-    label: 'New Yorker',
-    description: 'Fast, direct, no-nonsense. Clear and helpful, minimal slang.',
-    sliders: { formality: 0.45, warmth: 0.35, humor: 0.2, bluntness: 0.75, verbosity: 0.35 },
-    lexicon: { allow: ['look', "here's the thing"], avoid: ['fuggedaboutit'] },
-    rules: {
-      dos: ['Be concise.', 'Be direct but not rude.'],
-      donts: ['No caricature.', 'Avoid heavy dialect spelling.']
-    },
-    guardrails: { slangCapPer100Words: 2 }
-  },
-  {
-    id: 'texan',
-    label: 'Texan',
-    description: 'Friendly, plainspoken, calm confidence. Subtle regional warmth.',
-    sliders: { formality: 0.4, warmth: 0.75, humor: 0.25, bluntness: 0.45, verbosity: 0.45 },
-    lexicon: { allow: ["y'all", 'howdy'], avoid: ["rootin' tootin'"] },
-    rules: {
-      dos: ['Sound welcoming.', 'Keep slang subtle.'],
-      donts: ['No stereotypes.', 'No exaggerated cowboy talk.']
-    },
-    guardrails: { slangCapPer100Words: 3 }
-  }
-];
+import { detectPhoneticDialect, estimateClarityWarnings } from './guardrails/checks.js';
+import { builtInVoices } from './voices/index.js';
 
 const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
 
@@ -161,6 +125,9 @@ export async function applyVoice(args: {
       break;
     }
   }
+
+  warnings.push(...detectPhoneticDialect(rewritten));
+  warnings.push(...estimateClarityWarnings(rewritten));
 
   const meta: PersonaMeta = {
     slangCount,
