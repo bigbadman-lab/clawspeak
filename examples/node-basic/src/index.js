@@ -34,12 +34,14 @@ const baseAgent = async (prompt) => {
   return `Explain what ClawSpeak does in 3 short bullet points, then give one example sentence.\n\nPrompt: ${prompt}`;
 };
 
+const voiceId = 'raig_bait_chef';
+
 // Voiced agent wrapper
 const voiced = createVoicedAgent({
   agent: baseAgent,
-  voiceId: 'east_end_londoner',
+  voiceId,
   model: adapter,
-  strength: 0.55,
+  strength: voiceId === 'raig_bait_chef' ? 0.95 : 0.55,
   onMeta: (meta) => {
     if (meta.warnings?.length) console.log('ClawSpeak warnings:', meta.warnings);
   }
