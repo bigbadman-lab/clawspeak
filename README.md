@@ -41,16 +41,23 @@ console.log(await glasgowAgent(""));
 - **Anti-caricature guardrails** — Flags heavy phonetic spelling and banned phrases.
 - **Clarity heuristics** — Optional warnings for long sentences or complex wording.
 - **Provider-agnostic** — OpenAI, Grok (xAI), and any OpenAI-compatible API.
+- **Multiple regional and stylistic voices** — Including blunt and ultra-polite modes.
 
 ## Voices
 
-- `east_end_londoner`
-- `scouse`
-- `glaswegian`
-- `geordie`
-- `dublin`
-- `new_yorker`
-- `texan`
+- east_end_londoner
+- scouse
+- glaswegian
+- geordie
+- dublin
+- new_yorker
+- texan
+- southern_us
+- californian
+- overly_polite
+- very_rude
+
+Voices are designed to remain broadly understandable, avoid stereotypes, and preserve meaning exactly.
 
 Use `listVoices()` for labels and descriptions.
 
