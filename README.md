@@ -105,6 +105,39 @@ const res = await applyVoice({ text: "...", voiceId: "dublin", model: adapter })
 console.log(res.text);
 ```
 
+## Local voice testing (no OpenClaw required)
+
+`applyVoice` requires a **ModelAdapter** and calls an LLM to perform the rewrite, so an API key is required. You can test voices locally without OpenClaw using the repo script.
+
+**Steps:**
+
+```bash
+pnpm install
+pnpm --filter clawspeak build
+export LLM_API_KEY="sk-..."
+node scripts/test-raig.mjs
+```
+
+**Optional env vars:**
+
+- **LLM_MODEL** — Model id (default example: `gpt-4o-mini`).
+- **LLM_BASE_URL** — For OpenAI-compatible providers (e.g. Grok/xAI); omit for OpenAI.
+
+The script uses `LLM_API_KEY` or `OPENAI_API_KEY` and runs the `raig_bait_chef` voice on a sample draft. Minimal usage in code:
+
+```ts
+import { applyVoice, openAICompatAdapter } from "clawspeak";
+
+const model = openAICompatAdapter({
+  apiKey: process.env.LLM_API_KEY,
+  model: process.env.LLM_MODEL || "gpt-4o-mini",
+  baseUrl: process.env.LLM_BASE_URL,
+});
+
+const res = await applyVoice({ text: "Your draft.", voiceId: "raig_bait_chef", model });
+console.log(res.text);
+```
+
 ## OpenClaw Plugin
 
 The **@clawspeak/openclaw** plugin exposes ClawSpeak as tools for OpenClaw-compatible agents:
