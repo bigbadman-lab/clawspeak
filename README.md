@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/clawspeak-banner.png" alt="ClawSpeak banner" width="100%" />
+</p>
+
 # ClawSpeak 🦞
 
 ![CI](https://github.com/bigbadman-lab/clawspeak/actions/workflows/ci.yml/badge.svg)
