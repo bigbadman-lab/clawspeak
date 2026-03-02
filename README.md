@@ -107,36 +107,68 @@ console.log(res.text);
 
 ## Local voice testing (no OpenClaw required)
 
-`applyVoice` requires a **ModelAdapter** and calls an LLM to perform the rewrite, so an API key is required. You can test voices locally without OpenClaw using the repo script.
+ClawSpeak is a tone-only post-processing layer.
+It requires a `ModelAdapter` because rewrites are performed by an LLM.
 
-**Steps:**
+You can test voices locally without OpenClaw using the OpenAI-compatible adapter.
+
+### 1. Install and build
 
 ```bash
 pnpm install
 pnpm --filter clawspeak build
+```
+
+### 2. Set your API key
+
+```bash
 export LLM_API_KEY="sk-..."
+```
+
+Optional environment variables:
+
+```bash
+export LLM_MODEL="gpt-4o-mini"
+export LLM_BASE_URL="https://api.openai.com/v1"
+```
+
+### 3. Run the local test harness
+
+```bash
 node scripts/test-raig.mjs
 ```
 
-**Optional env vars:**
+This will:
 
-- **LLM_MODEL** — Model id (default example: `gpt-4o-mini`).
-- **LLM_BASE_URL** — For OpenAI-compatible providers (e.g. Grok/xAI); omit for OpenAI.
+- Print available voices
+- Rewrite sample text using raig_bait_chef
+- Output guardrail metadata
 
-The script uses `LLM_API_KEY` or `OPENAI_API_KEY` and runs the `raig_bait_chef` voice on a sample draft. Minimal usage in code:
+### Direct usage example
 
 ```ts
-import { applyVoice, openAICompatAdapter } from "clawspeak";
+import {
+  applyVoice,
+  openAICompatAdapter
+} from "clawspeak";
 
 const model = openAICompatAdapter({
-  apiKey: process.env.LLM_API_KEY,
-  model: process.env.LLM_MODEL || "gpt-4o-mini",
-  baseUrl: process.env.LLM_BASE_URL,
+  apiKey: process.env.LLM_API_KEY!,
+  model: "gpt-4o-mini"
 });
 
-const res = await applyVoice({ text: "Your draft.", voiceId: "raig_bait_chef", model });
-console.log(res.text);
+const result = await applyVoice({
+  text: "Explain what this library does.",
+  voiceId: "raig_bait_chef",
+  model,
+  options: { strength: 0.8 }
+});
+
+console.log(result.text);
 ```
+
+ClawSpeak modifies tone only.
+It does not alter meaning, safety boundaries, or factual content.
 
 ## OpenClaw Plugin
 
